@@ -1,7 +1,7 @@
  #!/usr/bin/python
  # -*- coding: utf-8 -*-
 import codecs
-def asciiToHex(message):
+def asciiStringToHex(message):
     encoded = ""
     for char in message:
         encoded += hex(ord(char))[2:]
@@ -13,7 +13,7 @@ def hexToAscii(encoded):
         message += chr(int('0x'+character,16))
     return message
 
-def asciiToBase64(message):
+def asciiStringToBase64(message):
     '''
     b1: chuyển ascii sang binary
     b2: tách 6 bytes binary trên , chuyển sang hex
@@ -40,8 +40,8 @@ def paddingBytes(plain,len):
     return hexString.rjust(len-len(hexString),"00")
 
 def fixedXorAsciiString(string1, string2):
-    hexString1 = asciiToHex(string1)
-    hexString2 = asciiToHex(string2)
+    hexString1 = asciiStringToHex(string1)
+    hexString2 = asciiStringToHex(string2)
     return fixedXorHexString(hexString1,hexString2)
 
 def fixedXorHexString(string1, string2):
@@ -81,3 +81,32 @@ def repeatXor(plain,key):
     #padding the key
     key= generateKey(key,len(plain))
     return fixedXorAsciiString(plain,key)
+
+def asciiStringToBinary(inputStr):
+    '''
+    chuyen chuoi ascii thanh binary \n
+    input: a ascii string\n
+    output: binary format of this string\n
+    '''
+    hexString = asciiStringToHex(inputStr)
+    binString = (bin(int(hexString,16))[2:])
+    padding = 8- len(binString)%8
+    binString2 = binString.rjust(len(binString)+padding,'0')
+    return binString2
+    
+def hammingDistanceCount(string1,string2):
+    '''
+    string1 : chuoi ascii 1 \n
+    string2 : chuoi ascii 2 \n
+    output: a integer of different bit \n
+    '''
+    bin1 = int(asciiStringToBinary(string1),2)
+    bin2 = int(asciiStringToBinary(string2),2)
+    # distance = 0
+    # for i,j in zip(bin1,bin2):
+    #     if i!=j:
+    #         distance+=1
+    # return distance
+    return bin(bin1^bin2).count('1')
+
+    
